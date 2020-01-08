@@ -1,0 +1,10 @@
+Temp/humidity/pressure sensor
+https://learn.adafruit.com/adafruit-bme680-humidity-temperature-barometic-pressure-voc-gas/python-circuitpython
+
+Mic
+https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/raspberry-pi-wiring-and-test
+
+Motion sensor
+https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor/circuitpython-code
+
+
