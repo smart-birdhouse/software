@@ -1,3 +1,5 @@
+# from https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor/circuitpython-code
+
 import board
 import digitalio
 
