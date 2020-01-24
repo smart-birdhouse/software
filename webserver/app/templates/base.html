@@ -1,0 +1,14 @@
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - Web Portal</title>
+      {% else %}
+      <title>Welcome to Smart Birdhouse</title>
+      {% endif %}
+    </head>
+    <body>
+        <div><a href="/index">Home</a>          <a href="/videos">Videos</a>         <a href="/audio">Audio</a>         <a href="/stats">Stats</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>

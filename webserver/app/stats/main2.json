@@ -1,0 +1,10 @@
+{
+    "stats" : {
+        "Temperature"           : 70,
+        "Rel_Humidity"          : 50,
+        "Pressure"              : 500,
+        "Bird_Detected"         : "False",
+        "Last_Detection_Date"   : "01-20-2020",
+        "Last_Detection_Time"   : "18:42:35"
+    }
+}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Welcome!</h1>
+    <h2>Currently...</h2>
+    {% for file in files %}
+    <div><p><a href="/videos/{{ file }}">{{ file }}</a></p></div>
+    {% endfor %}
+{% endblock %}
