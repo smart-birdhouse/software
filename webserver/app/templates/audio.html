@@ -4,6 +4,6 @@
     <h1>Welcome!</h1>
     <h2>Currently...</h2>
     {% for file in files %}
-    <div><p><a href="/audio/{{ file }}">{{ file }}</a></p></div>
+    <div><p><a href="/audio/{{ file }}">{{ file }}</a> <a href="/download/{{ file }}">(Download)</a></p></div>
     {% endfor %}
 {% endblock %}

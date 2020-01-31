@@ -1,10 +1,10 @@
-from flask import render_template
-from flask import send_file
+from flask import render_template, send_file, Response
 from app import app
 import pathlib
 import json
 from os import listdir
 from os.path import isfile, join
+import subprocess
 
 curDir = pathlib.Path(__file__).parent.absolute()
 
@@ -52,3 +52,20 @@ def getstatdata(filepath):
     with open(jsonFilePath) as jsonFile:
         jsonData = json.load(jsonFile)
     return render_template('statDisplay.html', data=jsonData['stats'])
+
+@app.route('/download/<path:filepath>')
+def downloadData(filepath):
+    if str(filepath).find(".json"):
+        dataFilePath = str(curDir) + r'/stats/' + str(filepath)
+    elif str(filepath).find(".mp4"):
+        dataFilePath = str(curDir) + r'/videos/' + str(filepath)
+    elif str(filepath).find(".mp3"):
+        dataFilePath = str(curDir) + r'/audio/' + str(filepath)
+
+    return Response(dataFilePath, headers={"Content-disposition":"attachment; filename="+filepath})
+
+@app.route('/clearDirectory')
+def clrDir():
+    rc = subprocess.call("app/clrDir.sh")
+    pass
+    
