@@ -1,5 +1,5 @@
 # Libraries
-from board import D5, D6
+from board import D23, D24
 from adafruit_hcsr04 import HCSR04
 from time import sleep
 from signal import signal, SIGINT
@@ -7,7 +7,7 @@ from signal import signal, SIGINT
 
 class Ultrasonic(HCSR04):
     def __init__(self):
-        super().__init__(trigger_pin=D5, echo_pin=D6)
+        super().__init__(trigger_pin=D24, echo_pin=D23)
 
 
 def handler():
