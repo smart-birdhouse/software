@@ -9,7 +9,7 @@ class Environment(Adafruit_BME280_I2C):
     def __init__(self):
         # call parent init using bus I2C port
         super().__init__(I2C(SCL, SDA))
-        super().sea_level_pressure = self.SEA_LEVEL_PRESSURE
+        # super().sea_level_pressure = self.SEA_LEVEL_PRESSURE
 
 
 if __name__ == "__main__":
