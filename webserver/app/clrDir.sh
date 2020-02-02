@@ -1,9 +1,9 @@
 #!/bin/bash
 
-rm -rf audio/
-rm -rf videos/
-rm -rf stats/
+rm -rf app/audio/
+rm -rf app/videos/
+rm -rf app/stats/
 
-mkdir audio
-mkdir videos
-mkdir stats
+mkdir app/audio
+mkdir app/videos
+mkdir app/stats

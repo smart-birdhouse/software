@@ -1,4 +1,4 @@
-from flask import render_template, send_file, Response
+from flask import render_template, send_file, Response, redirect
 from app import app
 import pathlib
 import json
@@ -67,5 +67,5 @@ def downloadData(filepath):
 @app.route('/clearDirectory')
 def clrDir():
     rc = subprocess.call("app/clrDir.sh")
-    pass
+    return redirect('/')
     
