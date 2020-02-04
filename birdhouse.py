@@ -3,6 +3,7 @@ import pir
 import ultrasonic
 from time import sleep, localtime
 from signal import signal, SIGINT
+from RPi import GPIO
 
 import picamera
 
@@ -15,18 +16,18 @@ def timeStrStatus():
 
 # "ymdhms", used for easily sortable filename writes
 def timeStrSort():
-	return ( str(localtime().tm_year) + str(localtime().tm_mon) +
-			str(localtime().tm_mday) + str(localtime().tm_hour) + str(localtime().tm_min) +
-			str(localtime().tm_sec) )
+	return ( str(localtime().tm_year) + "_" + str(localtime().tm_mon) + "_" +
+			str(localtime().tm_mday) + "_" + str(localtime().tm_hour) + "_" +
+			str(localtime().tm_min) + "_" + str(localtime().tm_sec) )
 
-def handler0():
+def handler(signal_recieved, frame):
 	print("Measurement stopped by user.")
 	u.deinit()
 	p.sleep()
 	GPIO.cleanup()
-	statusFile.write("Program Stop: " + timeStringStatus() + '\n')
+	statusFile.write("Program Stop: " + timeStrStatus() + "\n\n")
 	statusFile.close()
-	#camera.stop_recording()
+	camera.close()
 	exit(0)
 
 
@@ -35,49 +36,59 @@ if __name__ == '__main__':
 	u = ultrasonic.Ultrasonic()
 	p = pir.PIR()
 
-	signal(SIGINT, handler0)
+	signal(SIGINT, handler)
 
-	statusFile = open("statushistory.txt", 'a')
-	statusFile.write("Program Start: " + timeStrStatus() + '\n')
+	statusFile = open("birdlog.txt", 'a')
+	statusFile.write("Program Start: " + timeStrStatus() + "\n")
 
-	#camera = picamera.PiCamera()
-	#camera.resolution = (1280, 720)
+	camera = picamera.PiCamera()
+	camera.resolution = (3280, 2464)
+	# camera.framerate = 15
 
 	try:
 		dist = u.distance
-		oldMotion = p.movement
+		motion = p.movement
 	except RuntimeError:
-		dist = 10
-		oldMotion = 1
-		newMotion = 1
+		dist = 20
+		motion = 0
 
 	counter = 0
 	birdHere = 0
 
+	# startup delay for sake of pir stabilization
+	sleep(2)
+
 	while True:
 		try:
 			dist = u.distance
-			newMotion = p.movement
+			motion = p.movement
 
-			if( dist <= 10 and newMotion == 1 and oldMotion == 0 ):
+			if( dist <= 12 and motion == 1 and birdHere == 0 ):
 				statusFile.write("Bird in: " + timeStrStatus() + '\n')
+				print("bird in")
 				birdHere = 1
-				#camera.start_recording("video" + timeStrSort() + ".h264")
-				#camera.wait_recording(5)
-				#camera.stop_recording()
+				camera.start_preview()
+				sleep(2)
+				camera.capture("pic" + timeStrSort() + ".jpg")
+				camera.stop_preview()
+				# camera.wait_recording(5)
+				# camera.stop_recording()
 
-			elif( dist <= 10 and newMotion == 0 and birdHere == 1 and counter == 10):
+			elif( (dist <= 12 or motion == 1) and birdHere == 1 and counter >= 20):
 				statusFile.write("Bird still here: " + timeStrStatus() + '\n')
+				print("bird still here")
 				counter = 0
 
-			elif( birdHere == 1 and dist > 10 ):
+			elif( birdHere == 1 and dist > 12 and motion == 0 ):
 				statusFile.write("Bird has left: " + timeStrStatus() + '\n')
+				print("bird out")
 				birdHere = 0
+
 
 		except RuntimeError:
 			print("Polling error")
 
-		oldMotion = newMotion
-		counter += 1
+		if birdHere:
+			counter += 1
+			sleep(1)
 		sleep(0.2)
-

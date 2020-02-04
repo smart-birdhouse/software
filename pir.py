@@ -1,13 +1,13 @@
 # from https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor/circuitpython-code
 
-from board import D2
 from RPi import GPIO
 from signal import signal, SIGINT
+from board import D2
 
 
 class PIR:
     def __init__(self):
-        self._pin = 2  # pin number connected to PIR sensor output wire
+        self._pin = 5 # pin number connected to PIR sensor output wire
 
 		# set as input
         GPIO.setup(self._pin, GPIO.IN)
@@ -20,7 +20,7 @@ class PIR:
         GPIO.add_event_detect(self._pin, GPIO.BOTH,
                               callback=self._handler)
 
-    def _handler(self):
+    def _handler(self, pin):
         self.movement = GPIO.input(self._pin)
 
     def sleep(self):
@@ -44,6 +44,8 @@ if __name__ == '__main__':
     p = PIR()
     signal(SIGINT, handler)
 
+    old_value = p.movement
+    print(old_value)
     while True:
         pir_value = p.movement
         if pir_value:

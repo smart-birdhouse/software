@@ -10,7 +10,7 @@ class Ultrasonic(HCSR04):
         super().__init__(trigger_pin=D24, echo_pin=D23)
 
 
-def handler():
+def handler(signal_received, frame):
     print("Measurement stopped by user.")
     u.deinit()
     exit(0)
@@ -25,4 +25,4 @@ if __name__ == '__main__':
             print(u.distance)
         except RuntimeError:
             print("Retrying!")
-        sleep(0.1)
+        sleep(0.2)
