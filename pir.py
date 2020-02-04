@@ -3,7 +3,6 @@
 More info: https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor/circuitpython-code
 """
 
-from board import D2
 from RPi import GPIO
 from signal import signal, SIGINT
 from board import D5
@@ -23,7 +22,7 @@ class PIR:
 
         Uses the correct pin number and GPIO functions to setup input pin and event detection.
         """
-        self._pin = 2  # pin number connected to PIR sensor output wire
+        self._pin = 5 # pin number connected to PIR sensor output wire
 
         # set as input
         GPIO.setup(self._pin, GPIO.IN)
