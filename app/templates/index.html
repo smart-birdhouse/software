@@ -3,16 +3,17 @@
 {% block content %}
     <h1>Welcome!</h1>
     <h2>Currently...</h2>
-    <div><p><b>Temperature</b> is {{ data.Temperature }} &#x2103;</p></div>
-    <div><p><b>Relative Humidity</b> is {{ data.Rel_Humidity }} %</p></div>
-    <div><p><b>Pressure</b> is {{ data.Pressure }} hPa</p></div>
+    <div><p><b>Temperature</b> is {{ data.temperature }} &#x2103;</p></div>
+    <div><p><b>Relative Humidity</b> is {{ data.humidity }} %</p></div>
+    <div><p><b>Pressure</b> is {{ data.pressure }} hPa</p></div>
+    <div><p><b>Altitude</b> is {{ data.altitude }} meters</p></div>
     {% if data.Bird_Detected=="True" %}
     <div><p> There is a bird home!</p></div>
     {% else %}
     <div><p> There is no bird home! :(</p></div>
     {% endif %}
     <div><p>Last Bird Detected: {{ data.Last_Detection_Date }} at {{ data.Last_Detection_Time }} </p></div>
-    <iframe src="http://10.4.144.174:8080/stream" width="640" height="480" frameborder="0" scrolling="no" allign="left" id="ImgStream"></iframe>
+    <iframe src="http://{{ ip }}:8080/stream" width="640" height="480" frameborder="0" scrolling="no" allign="left" id="ImgStream"></iframe>
 
     <hr>
     <div><p><a href="/clearDirectory">Clear data</a> (<b>WARNING:</b> This will delete <b> ALL </b> recorded data on the pi)</p> </div>

@@ -2,20 +2,25 @@ from flask import render_template, send_file, Response, redirect
 from app import app
 import pathlib
 import json
+import sys
+import os
 from os import listdir
 from os.path import isfile, join
 import subprocess
+from subprocess import check_output
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 curDir = pathlib.Path(__file__).parent.absolute()
-
+from environment import Environment
+e = Environment()
+ip = check_output(['hostname','-I']).decode("utf-8")
 
 @app.route('/')
 @app.route('/index')
 def index():
-    with open(str(curDir) + r'/main.json') as json_file:
-        data = json.load(json_file)
-        print(data['stats'])
-    return  render_template('index.html', title='Smart Birdhouse', data=data['stats'])
+    
+    return  render_template('index.html', title='Smart Birdhouse', data=e, ip=ip)
 
 @app.route('/videos')
 def findvideofiles():
