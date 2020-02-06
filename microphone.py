@@ -9,8 +9,13 @@ from time import strftime, sleep
 
 class Microphone:
     """Class setup to use the Adafruit I2S MEMS Microphone."""
+<<<<<<< HEAD
     _BASE_COMMAND = "arecord -D plughw:1 -c1 -r 48000 -f S32_LE -t wav -V mono".split(
         ' ')
+=======
+    _BASE_COMMAND = ['arecord', '-D plughw:1', '-c1',
+                     '-r 48000', '-f S32_LE', '-t wav', '-V mono']
+>>>>>>> ded7c77... add google-style docstrings to existing files
 
     RECORDING = 'recording'
     DONE = 'done'
@@ -38,12 +43,20 @@ class Microphone:
 
             command.append(filename)
 
+<<<<<<< HEAD
             print(f"command= {command}")
             self._process = Popen(command)
 
     def stop(self):
         """Stops an ongoing recording."""
         if(self._process is not None):
+=======
+            self._process = Popen(command, shell=True)
+
+    def stop(self):
+        """Stops an ongoing recording."""
+        if(self.p is not None):
+>>>>>>> ded7c77... add google-style docstrings to existing files
             self._process.terminate()
 
     def status(self):

@@ -1,20 +1,29 @@
+"""Utilizes Adafruit Passive Infrared sensor to detect motion.
+
+More info: https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor/circuitpython-code
+"""
+
+from board import D2
 from RPi import GPIO
 from signal import signal, SIGINT
 from board import D5
 
 class PIR:
-    """
-    Class defining operations for the PIR sensor.
-    After init, get the current state of the PIR through the class variable 'movement' which is
-    updated on an interrupt from a change in the pin state.
+    """Class setup to use the Adafruit Passive Infrared sensor.
+
+    Uses GPIO event detection to link the movement attribute to the appropriate pin.
+
+    Attributes:
+        movement: Indicates the status of the data pin, turns to 1 if there is movement.
+
     """
 
     def __init__(self):
-        """
-        Starts detection on initialization
-        """
+        """Creates a new PIR object.
 
-        self._pin = 5 # pin number connected to PIR sensor output wire
+        Uses the correct pin number and GPIO functions to setup input pin and event detection.
+        """
+        self._pin = 2  # pin number connected to PIR sensor output wire
 
         # set as input
         GPIO.setup(self._pin, GPIO.IN)
@@ -48,6 +57,7 @@ class PIR:
 
 
 def handler(signal_received, frame):
+    """Function linked with signal to SIGINT so that we can cleanup when the user presses Ctrl-C."""
     print("Measurement stopped by user.")
     p.sleep()
     GPIO.cleanup()
