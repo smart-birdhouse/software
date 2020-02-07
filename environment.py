@@ -1,6 +1,7 @@
 from board import SCL, SDA
 from busio import I2C
 from adafruit_bme280 import Adafruit_BME280_I2C
+from time import sleep
 
 
 class Environment(Adafruit_BME280_I2C):
@@ -12,9 +13,18 @@ class Environment(Adafruit_BME280_I2C):
         # super().sea_level_pressure = self.SEA_LEVEL_PRESSURE
 
 
+def handler(signal_received, frame):
+    print("Measurement stopped by user.")
+
+    exit(0)
+
+
 if __name__ == "__main__":
     e = Environment()
-    print("\nTemperature: %0.1f C" % e.temperature)
-    print("Humidity: %0.1f %%" % e.humidity)
-    print("Pressure: %0.1f hPa" % e.pressure)
-    print("Altitude = %0.2f meters" % e.altitude)
+
+    while True:
+        print("\nTemperature: %0.1f C" % e.temperature)
+        print("Humidity: %0.1f %%" % e.humidity)
+        print("Pressure: %0.1f hPa" % e.pressure)
+        print("Altitude = %0.2f meters" % e.altitude)
+        sleep(1)
