@@ -21,6 +21,8 @@ curDir = pathlib.Path(__file__).parent.absolute()
 from environment import Environment
 e = Environment()
 ip = check_output(['hostname','-I']).decode("utf-8")
+iplen = len(ip)
+ip = ip[:(iplen-2)]
 
 @app.route('/')
 @app.route('/index')
@@ -32,7 +34,7 @@ def index():
 def findvideofiles():
     onlyfiles = [f for f in listdir(str(curDir) + r'/videos') if isfile(join((str(curDir) + r'/videos'), f))]
     print(onlyfiles)
-    return render_template('videos.html', files=onlyfiles)
+    return render_template('videos.html', files=onlyfiles, val=val)
 
 
 @app.route('/videos/<path:filepath>')
@@ -43,7 +45,7 @@ def getvideodata(filepath):
 def findaudiofiles():
     onlyfiles = [f for f in listdir(str(curDir) + r'/audio') if isfile(join((str(curDir) + r'/audio'), f))]
     print(onlyfiles)
-    return render_template('audio.html', files=onlyfiles)
+    return render_template('audio.html', files=onlyfiles, val=val)
 
 
 @app.route('/audio/<path:filepath>')
@@ -54,7 +56,7 @@ def getaudiodata(filepath):
 def findstatfiles():
     onlyfiles = [f for f in listdir(str(curDir) + r'/stats') if isfile(join((str(curDir) + r'/stats'), f))]
     print(onlyfiles)
-    return render_template('stats.html', files=onlyfiles)
+    return render_template('stats.html', files=onlyfiles, val=val)
 
 
 @app.route('/stats/<path:filepath>')
@@ -68,17 +70,16 @@ def getstatdata(filepath):
 def downloadData(filepath):
     if str(filepath).find(".json"):
         dataFilePath = str(curDir) + r'/stats/' + str(filepath)
-    elif str(filepath).find(".mp4"):
+    elif str(filepath).find(".h264"):
         dataFilePath = str(curDir) + r'/videos/' + str(filepath)
     elif str(filepath).find(".mp3"):
         dataFilePath = str(curDir) + r'/audio/' + str(filepath)
 
     return Response(dataFilePath, headers={"Content-disposition":"attachment; filename="+filepath})
 
-#@app.route('/clearDirectory')
-#def clrDir():
-#    rc = subprocess.call("app/clrDir.sh")
-#    return redirect('/')
+#@app.route('/stream')
+#def streaming():
+#    return render_template('streaming.html', val=val)
 
 if val == "TRUE":
     @app.route('/control')
@@ -86,9 +87,10 @@ if val == "TRUE":
         return render_template('control.html')
 
     @app.route('/control/<scriptname>')
-    def scriptexe():
+    def scriptexe(scriptname):
         try:
-            rc = subprocess.call("app/" + scriptname)
+            subprocess.call("app/" + str(scriptname) + ".sh")
         except:
             print("Error! Script not found!")
+
         return redirect('/control')
