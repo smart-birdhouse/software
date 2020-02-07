@@ -10,6 +10,12 @@ import subprocess
 from subprocess import check_output
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+try:
+    val = os.environ['SERVER_DEBUG']
+    
+except:
+    print("Debug not found! Starting server without control panel")
+    val = "FALSE"
 
 curDir = pathlib.Path(__file__).parent.absolute()
 from environment import Environment
@@ -20,7 +26,7 @@ ip = check_output(['hostname','-I']).decode("utf-8")
 @app.route('/index')
 def index():
     
-    return  render_template('index.html', title='Smart Birdhouse', data=e, ip=ip)
+    return  render_template('index.html', title='Smart Birdhouse', data=e, ip=ip, val=val)
 
 @app.route('/videos')
 def findvideofiles():
@@ -69,8 +75,20 @@ def downloadData(filepath):
 
     return Response(dataFilePath, headers={"Content-disposition":"attachment; filename="+filepath})
 
-@app.route('/clearDirectory')
-def clrDir():
-    rc = subprocess.call("app/clrDir.sh")
-    return redirect('/')
-    
+#@app.route('/clearDirectory')
+#def clrDir():
+#    rc = subprocess.call("app/clrDir.sh")
+#    return redirect('/')
+
+if val == "TRUE":
+    @app.route('/control')
+    def control():
+        return render_template('control.html')
+
+    @app.route('/control/<scriptname>')
+    def scriptexe():
+        try:
+            rc = subprocess.call("app/" + scriptname)
+        except:
+            print("Error! Script not found!")
+        return redirect('/control')
