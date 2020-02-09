@@ -7,7 +7,7 @@
       {% endif %}
     </head>
     <body>
-        <div><a href="/index">Home</a>          <a href="/videos">Videos</a>         <a href="/audio">Audio</a>         <a href="/stats">Stats</a></div>
+	    <div><a href="/index">Home</a>          <a href="/videos">Videos</a>         <a href="/audio">Audio</a>         <a href="/stats">Stats</a></div> {% if val=="TRUE" %} <a href="/control">Control Panel</a> {% endif %}
         <hr>
         {% block content %}{% endblock %}
     </body>

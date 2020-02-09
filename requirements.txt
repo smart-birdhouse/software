@@ -16,3 +16,4 @@ RPi.GPIO==0.7.0
 serial==0.0.97
 spidev==3.4
 sysv-ipc==1.0.1
+flask==1.1.1
