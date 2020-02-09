@@ -6,8 +6,10 @@ More info: https://www.linux-projects.org/uv4l/installation/
 from subprocess import Popen
 from time import strftime, sleep
 
+
 class Camera:
     """Class setup to use the UV4L library to record video."""
+    _CONFIG = """v4l2-ctl --set-fmt-video=width=1920,height=1080,pixelformat="H264" -d /dev/video0; sudo chrt -a -r -p 99 `pgrep uv4l`"""
     _START_RECORD = 'dd if=/dev/video0 bs=1M'.split(' ')
 
     RECORDING = 'recording'
@@ -32,9 +34,9 @@ class Camera:
         if(self._process is None or self._process.poll() is None):
             command = self._START_RECORD
 
-            command.append('of={filename}')
+            command.append(f'of={filename}')
 
-            self._process = Popen(command, shell=True)
+            self._process = Popen(command)  # , shell=True)
 
             if(duration):
                 sleep(duration)
@@ -73,4 +75,3 @@ if __name__ == '__main__':
     print(f"Starting 5 second recording..")
     cam.start(duration=5)
     print(f"Camera current status: {cam.status()}")
-
