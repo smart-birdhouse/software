@@ -1,12 +1,19 @@
-# from https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor/circuitpython-code
-
 from RPi import GPIO
 from signal import signal, SIGINT
-from board import D2
-
+from board import D5
 
 class PIR:
+"""
+Class defining operations for the PIR sensor.
+After init, get the current state of the PIR through the class variable 'movement' which is
+updated on an interrupt from a change in the pin state.
+"""
+
     def __init__(self):
+		"""
+		Starts detection on initialization
+		"""
+
         self._pin = 5 # pin number connected to PIR sensor output wire
 
 		# set as input
@@ -20,15 +27,22 @@ class PIR:
         GPIO.add_event_detect(self._pin, GPIO.BOTH,
                               callback=self._handler)
 
-    def _handler(self, pin):
+    def _handler(self):
+		"""
+		Updates 'movement' on pin change
+		"""
         self.movement = GPIO.input(self._pin)
 
     def sleep(self):
-        # remove detection so the handler is no longer called
+        """
+		Remove detection so the handler is no longer called.
+		"""
         GPIO.remove_event_detect(self._pin)
 
     def wake(self):
-        # re-add event detection
+        """
+		Restart the detection handler
+		"""
         GPIO.add_event_detect(self._pin, GPIO.BOTH,
                               callback=self._handler)
 
