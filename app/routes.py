@@ -8,7 +8,24 @@ from os import listdir
 from os.path import isfile, join
 import subprocess
 from subprocess import check_output
+import threading
+import time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+class scriptThread(object):
+    
+    def __init__(self, scriptname, delay=1):
+        #self.delay = delay
+        thread = threading.Thread(target=self.run, args=(scriptname,))
+        thread.daemon = True
+        time.sleep(delay)
+        thread.start()
+
+    def run(self, scriptname):
+        subprocess.call("app/" + str(scriptname) + ".sh")
+
+
 
 try:
     val = os.environ['SERVER_DEBUG']
@@ -100,7 +117,7 @@ if val == "TRUE":
     @app.route('/control/<scriptname>')
     def scriptexe(scriptname):
         try:
-            subprocess.call("app/" + str(scriptname) + ".sh")
+            thread = scriptThread(scriptname)
         except:
             print("Error! Script not found!")
 
