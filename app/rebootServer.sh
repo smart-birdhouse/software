@@ -1,5 +1,6 @@
 #!/bin/bash
 
-ls
-./startup.sh -d
+kill $(ps aux | grep 'flask' | awk '{print $2}')
+
+./startup.sh -d -r
 

@@ -17,9 +17,20 @@ except:
     print("Debug not found! Starting server without control panel")
     val = "FALSE"
 
+try:
+    periph = os.environ['SERVER_PERIPH']
+
+except:
+    print("Peripherals are connected")
+    periph = "TRUE"
+
+
 curDir = pathlib.Path(__file__).parent.absolute()
-from environment import Environment
-e = Environment()
+if periph == "TRUE":
+    from environment import Environment
+    e = Environment()
+else:
+    e = ""
 ip = check_output(['hostname','-I']).decode("utf-8")
 iplen = len(ip)
 ip = ip[:(iplen-2)]
