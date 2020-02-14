@@ -7,6 +7,7 @@ from RPi import GPIO
 from signal import signal, SIGINT
 from board import D5
 
+
 class PIR:
     """Class setup to use the Adafruit Passive Infrared sensor.
 
@@ -33,26 +34,30 @@ class PIR:
         # add a rising edge detection that sets the movement variable to input on the pin
         # callbacks are threaded, meaning this does not interrupt main program execution
         GPIO.add_event_detect(self._pin, GPIO.BOTH,
-                                    callback=self._handler0)
+                              callback=self._callback)
 
-    def _handler0(self):
-        """
-        Updates 'movement' on pin change
-        """
-        self.movement = GPIO.input(self._pin)
+    def _callback(self, pin):
+        """Updates 'movement' on pin change"""
+        self.movement = GPIO.input(pin)
 
     def sleep(self):
-        """
-        Remove detection so the handler is no longer called.
-        """
+        """Remove detection so the handler is no longer called."""
         GPIO.remove_event_detect(self._pin)
 
     def wake(self):
-        """
-        Restart the detection handler
-        """
+        """Restart the detection handler"""
         GPIO.add_event_detect(self._pin, GPIO.BOTH,
-                                    callback=self._handler)
+                              callback=self._callback)
+
+    def new_handler(self, func):
+        """Changes the function called when detecting the pir data event
+
+        Args:
+            func: the function to be used
+        """
+        self.sleep()
+        GPIO.add_event_detect(self._pin, GPIO.BOTH,
+                              callback=func)
 
 
 def handler(signal_received, frame):
