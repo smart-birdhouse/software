@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class scriptThread(object):
     def __init__(self, scriptname, delay=1):
-        thread = threading.Thread(target=self.run, args=scriptname,))
+        thread = threading.Thread(target=self.run, args=(scriptname,))
         thread.daemon = True
         time.sleep(delay)
         thread.start()
