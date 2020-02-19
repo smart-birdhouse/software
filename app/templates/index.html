@@ -13,6 +13,6 @@
     <div><p> There is no bird home! :(</p></div>
     {% endif %}
     <div><p>Last Bird Detected: {{ data.Last_Detection_Date }} at {{ data.Last_Detection_Time }} </p></div>
-    <iframe src="http:/{{ ip }}:8080" width="640" height="480" frameborder="0" scrolling="no" allign="left" id="ImgStream"></iframe>
+    <iframe src="http://{{ ip }}:8080/stream" width="640" height="480" frameborder="0" scrolling="no" allign="left" id="ImgStream"></iframe>
 
 {% endblock %}
