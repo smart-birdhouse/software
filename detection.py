@@ -32,6 +32,7 @@ class Detector:
 
         # get initial bird status
         if(self.p.movement == 1):
+            print("Motion detected")
             self._distanceCheck()
 
         # change interrupt handler for pir input pin to the _birdUpdateHandler() function
