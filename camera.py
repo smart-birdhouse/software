@@ -41,10 +41,13 @@ class Camera:
             if(duration):
                 sleep(duration)
                 self._process.terminate()
+        else:
+            raise Exception(
+                "Tried to start a video while one is already running!")
 
     def stop(self):
         """Stops an ongoing recording."""
-        if(self.p is not None):
+        if(self._process is not None):
             self._process.terminate()
 
     def status(self):
@@ -73,5 +76,5 @@ if __name__ == '__main__':
 
     print(f"Camera current status: {cam.status()}")
     print(f"Starting 5 second recording..")
-    cam.start(duration=5)
+    cam.start(filename='unittest.h264', duration=5)
     print(f"Camera current status: {cam.status()}")
