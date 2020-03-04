@@ -33,7 +33,6 @@ class Camera:
 
         if(self._process is None or self._process.poll() is None):
             command = self._START_RECORD
-
             command.append(f'of={filename}')
 
             self._process = Popen(command)  # , shell=True)
