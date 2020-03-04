@@ -25,4 +25,4 @@ if __name__ == '__main__':
             print(u.distance)
         except RuntimeError:
             print("Retrying!")
-        sleep(0.2)
+        sleep(0.75)
