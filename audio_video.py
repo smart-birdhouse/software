@@ -23,7 +23,7 @@ class AudioVideo:
     def startRecording(self):
         self.start_time = time.time()
         self.mic.start()
-        self.cam.stop() 
+        self.cam.stop()
         self.cam.start()
 
     def stopRecording(self):

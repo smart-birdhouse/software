@@ -12,12 +12,13 @@ class Detector:
     interrupt from the PIR input"""
 
 
-    def __init__(self, detectDist = 12):
+    def __init__(self, detectDist = 12, timeout = 15):
         self.u = ultrasonic.Ultrasonic()
         self.p = pir.PIR()
 
         self.birdHere = 0
         self.detectDist = detectDist
+        self.timeout = timeout
 
         self.statusWrite("on")
 
@@ -32,7 +33,7 @@ class Detector:
 
         # get initial bird status
         if(self.p.movement == 1):
-            print("Motion detected")
+            #print("Motion detected")
             self._distanceCheck()
 
         # change interrupt handler for pir input pin to the _birdUpdateHandler() function
@@ -60,7 +61,7 @@ class Detector:
             dist += self.u.distance
             dist = dist/3
 
-            print("Distance check reading: {0:1.3f}".format(dist))
+            #print("Distance check reading: {0:1.3f}".format(dist))
 
             if( dist <= self.detectDist ):
                 if( self.birdHere == 0 ):
@@ -84,17 +85,17 @@ class Detector:
         self.p.update(pin)
 
         if(self.p.movement == 1):
-            print("Motion detected")
+            #print("Motion detected")
             self._distanceCheck()
 
-            timeout = 0
-            while(self.birdHere == 0 and self.p.movement == 1 and timeout < 15):
+            timeO = 0
+            while(self.birdHere == 0 and self.p.movement == 1 and timeO < self.timeout):
                 sleep(1)
                 self._distanceCheck()
-                timeout += 1
+                timeO += 1
 
         else:
-            print("Motion ended")
+            #print("Motion ended")
             self.birdHere = 0
 
     def statusWrite(self, statusType):
