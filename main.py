@@ -1,5 +1,6 @@
 import detection
 import audio_video
+import environment
 
 from signal import signal, SIGINT
 from time import sleep
@@ -17,6 +18,7 @@ if __name__ == '__main__':
     det = detection.Detector()
     av = audio_video.AudioVideo()
     det.startDetection()
+    e = environment.Environment()
 
     signal(SIGINT, handler)
 

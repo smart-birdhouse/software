@@ -1,12 +1,13 @@
 # Libraries
 from board import D23, D24
-from adafruit_hcsr04 import HCSR04
+import adafruit_hcsr04
 from time import sleep
 from signal import signal, SIGINT
 
 
-class Ultrasonic(HCSR04):
-    def __init__(self):
+class Ultrasonic(adafruit_hcsr04.HCSR04):
+    def __init__(self, usePulse = False):
+        adafruit_hcsr04._USE_PULSEIO = usePulse
         super().__init__(trigger_pin=D24, echo_pin=D23)
 
 
@@ -17,7 +18,7 @@ def handler(signal_received, frame):
 
 
 if __name__ == '__main__':
-    u = Ultrasonic()
+    u = Ultrasonic(usePulse = True)
     signal(SIGINT, handler)
 
     while True:
@@ -25,4 +26,4 @@ if __name__ == '__main__':
             print(u.distance)
         except RuntimeError:
             print("Retrying!")
-        sleep(0.75)
+        sleep(0.5)

@@ -45,6 +45,7 @@ class Microphone:
         """Stops an ongoing recording."""
         if(self._process is not None):
             self._process.terminate()
+            self._process = None
 
     def status(self):
         """Returns the status of the microphone.
