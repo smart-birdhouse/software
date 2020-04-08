@@ -21,7 +21,7 @@ class Camera:
         """Creates a new Camera object."""
         self._process = None
 
-    def start(self, duration=None, filename=strftime("%m%d%Y-%H%M%S")+'.h264'):
+    def start(self, duration=None, filename=None):
         """Begins a recording.
 
         Opens a process to begin a camera recording.
@@ -30,6 +30,10 @@ class Camera:
             duration: A duration for the recording to last. If None, will continue infinitely
             filename: A filename to use for the video file, uses the time in MMDDYYYY-HHMMSS format by default.
         """
+
+        if filename is None:
+            filename = strftime("%m%d%Y-%H%M%S")+'.h264'
+
 
         if(self._process is None or self._process.poll() is None):
             command = self._START_RECORD
@@ -40,10 +44,10 @@ class Camera:
 
             if(duration):
                 sleep(duration)
-                self._process.terminate()
+                self.stop()
         else:
-            raise Exception(
-                "Tried to start a video while one is already running!")
+            print("Camera recording already running!")
+            raise CurrentRecordingError("Recording is currently ongoing...")
 
     def stop(self):
         """Stops an ongoing recording."""

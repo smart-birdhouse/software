@@ -1,3 +1,6 @@
+"""
+Top level program for running detection with event recording.
+"""
 import detection
 import audio_video
 import environment
