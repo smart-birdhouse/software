@@ -16,7 +16,7 @@ class Environment(Adafruit_BME280_I2C):
         # super().sea_level_pressure = self.SEA_LEVEL_PRESSURE
 
     def quickStatus(self):
-        """quick function to return the sensor readings
+        """function to return the sensor readings
         in a multiline string format"""
         print("\nTemperature: %0.1f C" % self.temperature)
         print("Humidity: %0.1f %%" % self.humidity)

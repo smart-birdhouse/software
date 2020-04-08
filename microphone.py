@@ -21,7 +21,7 @@ class Microphone:
         """Creates a new Microphone object."""
         self._process = None
 
-    def start(self, duration=None, filename=strftime("%m%d%Y-%H%M%S")+'.wav'):
+    def start(self, duration=None, filename=None):
         """Begins a recording.
 
         Opens a process to begin a microphone recording.
@@ -30,16 +30,22 @@ class Microphone:
             duration: A duration for the recording to last. If None, will continue infinitely
             filename: A filename to use for the wav file, uses the time in MMDDYYYY-HHMMSS format by default.
         """
+        if filename is None:
+            filename = strftime("%m%d%Y-%H%M%S")+'.wav'
+
 
         if(self._process is None or self._process.poll() is None):
-            command = self._BASE_COMMAND
+            command = self._BASE_COMMAND[:]
             if(duration):
                 command.append(f'-d {duration}')
 
-            command.append("/home/Trent/software/app/audio/"+filename)
-
+            command.append(filename)
             print(f"command= {command}")
             self._process = Popen(command)
+
+        else:
+            print("Mic already recording!")
+            raise CurrentRecordingError("Recording is currently ongoing...")
 
     def stop(self):
         """Stops an ongoing recording."""

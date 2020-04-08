@@ -1,11 +1,9 @@
-def main(shared_bird_detected, shared_timespec, shared_time_delay):
-    import detection
-    import audio_video
-    import environment
-    from jsonparser import jsonParser
-    from signal import signal, SIGINT
-    from time import sleep, strftime, localtime
-    import datetime
+"""
+Top level program for running detection with event recording.
+"""
+import detection
+import audio_video
+import environment
 
     def handler(sigal_received, frame):
         print("Measurement stopped by user.")
