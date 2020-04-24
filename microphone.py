@@ -5,7 +5,7 @@ More info: https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout
 
 from subprocess import Popen
 from time import strftime, sleep
-
+import pathlib
 
 class Microphone:
     """Class setup to use the Adafruit I2S MEMS Microphone."""
@@ -31,7 +31,7 @@ class Microphone:
             filename: A filename to use for the wav file, uses the time in MMDDYYYY-HHMMSS format by default.
         """
         if filename is None:
-            filename = strftime("%m%d%Y-%H%M%S")+'.wav'
+            filename = str(pathlib.Path(__file__).parent.absolute())+'/app/audio/'+strftime("%m%d%Y-%H%M%S")+'.wav';
 
 
         if(self._process is None or self._process.poll() is None):
