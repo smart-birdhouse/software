@@ -26,9 +26,15 @@ else
 	echo "Starting server"
 fi
 
-mkdir app/videos
-mkdir app/audio
-mkdir app/stats
+if [[ ! -f "/app/videos" ]]
+	mkdir app/videos
+fi
+if [[ ! -f "/app/audio" ]]
+	mkdir app/audio
+fi
+if [[ ! -f "/app/stats" ]]
+	mkdir app/stats
+fi
 
 source venv/bin/activate
 FLASK_APP=microblog.py

@@ -1,18 +1,26 @@
 {% extends "base.html" %}
-
+<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 {% block content %}
+<div id="mainPage"> 
     <h1>Welcome!</h1>
     <h2>Currently...</h2>
-    <div><p><b>Temperature</b> is {{ data.temperature }} &#x2103;</p></div>
-    <div><p><b>Relative Humidity</b> is {{ data.humidity }} %</p></div>
-    <div><p><b>Pressure</b> is {{ data.pressure }} hPa</p></div>
-    <div><p><b>Altitude</b> is {{ data.altitude }} meters</p></div>
-    {% if data.Bird_Detected=="True" %}
+    <div><p><b>Temperature</b> is {{ data[0].temperature|round(2) }} &#x2103;</p></div>
+    <div><p><b>Relative Humidity</b> is {{ data[0].humidity|round(2) }} %</p></div>
+    <div><p><b>Pressure</b> is {{ data[0].pressure|round(2) }} hPa</p></div>
+    <div><p><b>Altitude</b> is {{ data[0].altitude|round(2) }} meters</p></div>
+    {% if data[1].value == 1 %}
     <div><p> There is a bird home!</p></div>
     {% else %}
     <div><p> There is no bird home! :(</p></div>
     {% endif %}
-    <div><p>Last Bird Detected: {{ data.Last_Detection_Date }} at {{ data.Last_Detection_Time }} </p></div>
+    <div><p>Last Bird Detected: {{ date.value|datetime() }} </p></div>
+    <!--
     <iframe src="http://{{ ip }}:8080/stream" width="640" height="480" frameborder="0" scrolling="no" allign="left" id="ImgStream"></iframe>
-
+    -->
+</div>
+    <script>
+        setTimeout(function(){
+        	location = ''
+	},{{ data[3].value }})
+    </script>
 {% endblock %}

@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Stats from Bird Detected on {{ data.Last_Detection_Date }} at {{ data.Last_Detection_Time }}</h1>
-    <div><p><b>Temperature</b> is {{ data.Temperature }} &#x2103;</p></div>
-    <div><p><b>Relative Humidity</b> is {{ data.Rel_Humidity }} %</p></div>
-    <div><p><b>Pressure</b> is {{ data.Pressure }} hPa</p></div>
-    
+{% for timestamp in data %}
+<h1>Stats from {{ timestamp }}</h1>
+    <div><p><b>Temperature</b> is {{ timestamp.temperature }} &#x2103;</p></div>
+    <div><p><b>Relative Humidity</b> is {{ timestamp.humidity }} %</p></div>
+    <div><p><b>Pressure</b> is {{ timestamp.pressure }} hPa</p></div>
+    <div><p><b>Altitude</b> is {{ timestamp.altitude }} </p></div>
+{% endfor %} 
 {% endblock %}
