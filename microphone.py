@@ -36,7 +36,7 @@ class Microphone:
             if(duration):
                 command.append(f'-d {duration}')
 
-            command.append(filename)
+            command.append("/home/Trent/software/app/audio/"+filename)
 
             print(f"command= {command}")
             self._process = Popen(command)
@@ -45,6 +45,7 @@ class Microphone:
         """Stops an ongoing recording."""
         if(self._process is not None):
             self._process.terminate()
+            self._process = None
 
     def status(self):
         """Returns the status of the microphone.

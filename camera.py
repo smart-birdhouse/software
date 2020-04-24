@@ -33,7 +33,8 @@ class Camera:
 
         if(self._process is None or self._process.poll() is None):
             command = self._START_RECORD
-            command.append(f'of={filename}')
+
+            command.append(f'of=/home/Trent/software/app/videos/{filename}')
 
             self._process = Popen(command)  # , shell=True)
 
@@ -48,6 +49,7 @@ class Camera:
         """Stops an ongoing recording."""
         if(self._process is not None):
             self._process.terminate()
+            self._process = None
 
     def status(self):
         """Returns the status of the camera.

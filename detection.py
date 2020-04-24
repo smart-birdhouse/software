@@ -6,97 +6,143 @@ from signal import signal, SIGINT
 from RPi import GPIO
 
 class Detector:
-	"""
-	Detection class. Initializes pir and ultrasonic objects.
-	"""
-
-	def __init__(self, logfile = "birdlog.txt"):
-		self.u = ultrasonic.Ultrasonic()
-		self.p = pir.PIR()
-
-		self.statusFile = open(logfile, 'a')
-		self._statusWrite("on")
-		self.birdHere = 0
-
-		signal(SIGINT, self._handler)
-
-	def startDetection(self, detectDist = 12, noBirdUpdateFreq = 5, birdUpdateFreq = 1):
-		"""
-		Infinite loop to check for bird using ultrasonic and pir.
-		Writes to log file on status change.
-		"""
-
-		self._statusWrite("start")
-
-		# startup delay for sake of pir stabilization
-		sleep(2)
-
-		dist = detectDist+1
-		motion = 0
-		counter = 0
-		self.birdHere = 0
+    """Detection class. Initializes pir and ultrasonic objects.
+    After init and starting detection, check if there is a bird detected by
+    checking the value of the birdHere variable. It is updated based on an 
+    interrupt from the PIR input"""
 
 
-		while True:
-			try:
-				dist = self.u.distance
-				motion = self.p.movement
+    def __init__(self, detectDist = 12, timeout = 15):
+        self.u = ultrasonic.Ultrasonic()
+        self.p = pir.PIR()
+        
+        self.birdHere = 0
+        self.detectDist = detectDist
+        self.timeout = timeout
 
-				if( dist <= detectDist and motion == 1 and self.birdHere == 0 ):
-					self._statusWrite("in")
-					self.birdHere = 1
-					sleep(1)
+        self.statusWrite("on")
 
-				elif( (dist <= detectDist or motion == 1) and self.birdHere == 1 and counter >= 20):
-					self._statusWrite("here")
-					counter = 0
+    def isBirdHere(self):
+        return self.birdHere
 
-				elif( self.birdHere == 1 and dist > detectDist and motion == 0 ):
-					self._statusWrite("out")
-					self.birdHere = 0
+    def startDetection(self):
+        """Runs detection in the background based around the PIR interrupt. 
+        Whenever the PIR interrupt is triggered, it runs the _birdUpdateHandler() function"""
 
-			except RuntimeError:
-				print("Polling error")
+        self.statusWrite("start")
 
-			if self.birdHere:
-				counter += 1
-				sleep(1/birdUpdateFreq)
+        # get initial bird status
+        if(self.p.movement == 1):
+            #print("Motion detected")
+            self._distanceCheck()
 
-			else:
-				sleep(1/noBirdUpdateFreq)
+        # change interrupt handler for pir input pin to the _birdUpdateHandler() function
+        # this enables us to update birdHere in the background using the pin interrupt
+        self.p.newHandler(self._birdUpdateHandler)
+
+    def stopDetection(self):
+        """Disables PIR interrupt, which will pause detection"""
+        self.statusWrite("stop")
+        self.p.sleep()
+        self.birdHere = 0
+
+    def _distanceCheck(self):
+        """Checks whether there is an object in distance less than the 
+        detectDist threshold with data smoothing and updates birdHere and logs to the 
+        status file accordingly"""
+
+        # Catches the occasional polling error that occurs with the ultrasonic distance sensor
+        try:
+            # 3 point averager to smooth out distance data
+            dist = self.u.distance
+            sleep(0.05)
+            dist += self.u.distance
+            sleep(0.05)
+            dist += self.u.distance
+            dist = dist/3
+
+            #print("Distance check reading: {0:1.3f}".format(dist))
+
+            if( dist <= self.detectDist ):
+                if( self.birdHere == 0 ):
+                    self.statusWrite("in")
+                self.birdHere = 1
+
+            else:
+                if( self.birdHere == 1 ):
+                    self.statusWrite("out")
+                self.birdHere = 0
+
+        except RuntimeError:
+            pass
 
 
-	def _statusWrite(self, statusType):
-		"""Append status to statusfile with timestamp"""
+    def _birdUpdateHandler(self, pin):
+        """Handler called on PIR input change. While motion is detected, it will check for bird presence until
+        bird is detected or until timeout"""
 
-		timeStatus = strftime('%H:%M:%S %m/%d/%y')
+        # Update movement value from PIR pin status
+        self.p.update(pin)
 
-		statusDict = {
-			"on":"\nProgram start: ",
-			"start":"Detection start: ",
-			"in":"Bird in: ",
-			"here":"Bird still here: ",
-			"out":"Bird has left:",
-			"done":"Program close: "
-		}
+        if(self.p.movement == 1):
+            #print("Motion detected")
+            self._distanceCheck()
 
-		self.statusFile.write(statusDict[statusType] + timeStatus + "\n")
+            timeO = 0
+            while(self.birdHere == 0 and self.p.movement == 1 and timeO < self.timeout):
+                sleep(1)
+                self._distanceCheck()
+                timeO += 1
+
+        else:
+            #print("Motion ended")
+            self.birdHere = 0
+
+    def statusWrite(self, statusType):
+        """Append status to statusfile with timestamp"""
+
+        timeStatus = strftime('%H:%M:%S@%m/%d/%y')
+
+        # dict used for ease of writing
+        statusDict = {
+            "on":"\nProgram start: ",
+            "start":"Detection start: ",
+            "stop":"Detection stop: ",
+            "in":"Bird in: ",
+            "here":"Bird still here: ",
+            "out":"Bird has left: ",
+            "done":"Program close: "
+        }
+
+        with open("birdlog.txt",'a') as statusFile:
+            statusFile.write(statusDict[statusType] + timeStatus + "\n")
+
+    def __del__(self):
+        """Runs cleanup and closes"""
+        self.p.sleep()
+        GPIO.cleanup()
 
 
-	def _handler(self, signal_recieved, frame):
-		"""
-		Deinitializes sensors, closes log file, runs cleanup,
-		and closes on keyboard interrupt
-		"""
-		print("Measurement stopped by user.")
-		self.u.deinit()
-		self.p.sleep()
-		GPIO.cleanup()
-		self._statusWrite("done")
-		self.statusFile.close()
-		exit(0)
+
+def handler(signal_received, frame):
+    print("Measurement stopped by user.")
+    det.u.deinit()
+    exit(0)
 
 
 if __name__ == '__main__':
-	det = Detector()
-	det.startDetection()
+
+    det = Detector()
+
+    det.startDetection()
+
+    signal(SIGINT, handler)
+
+    while(1):
+        print("start of loop")
+        sleep(2)
+        if(det.isBirdHere()):
+            print("Bird is here")
+        else:
+            print("Bird is not here")
+        print("end of loop")
