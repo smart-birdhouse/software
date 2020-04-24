@@ -5,7 +5,7 @@ More info: https://www.linux-projects.org/uv4l/installation/
 
 from subprocess import Popen
 from time import strftime, sleep
-
+import pathlib
 
 class Camera:
     """Class setup to use the UV4L library to record video."""
@@ -32,7 +32,7 @@ class Camera:
         """
 
         if filename is None:
-            filename = strftime("%m%d%Y-%H%M%S")+'.h264'
+            filename = str(pathlib.Path(__file__).parent.absolute())+'/app/videos/'+strftime("%m%d%Y-%H%M%S")+'.h264';
 
 
         if(self._process is None or self._process.poll() is None):
